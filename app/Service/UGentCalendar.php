@@ -84,11 +84,15 @@ class UGentCalendar {
     private function mapEvents($events)
     {
         return collect($events->activiteiten)
+            // Edge case ...
+            ->filter(function($event) {
+                return $event !== "";
+            })
             ->map(function ($event) {
                 $event->beginuur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->beginuur);
                 $event->einduur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->einduur);
                 $event->datum = Carbon::createFromFormat('Y-m-d', $event->datum);
-    
+                
                 $groups = data_get($event, 'groep');
                 
                 if (!is_null($groups))
@@ -122,7 +126,7 @@ class UGentCalendar {
                 return $groups;
             })
             ->flatten()
-            ->map(function($group) {
+            ->map(function ($group) {
                 return intval($group);
             })
             ->all();
