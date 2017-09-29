@@ -13,4 +13,3 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('ical', 'Api\ICalController@index');

@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/cal.ics
 /storage/*.key
 /vendor
 /.idea

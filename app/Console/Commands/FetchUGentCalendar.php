@@ -1,29 +1,52 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Console\Commands;
 
 use App\Service\UGentCalendar;
-use App\Service\UGentCas;
-use Carbon\Carbon;
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
-use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\Cookie\SetCookie;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
-class ICalController extends Controller {
+class FetchUGentCalendar extends Command {
     
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'calendar:fetch';
+    
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Fetches the calendar from Minerva';
+    
+    /**
+     * @var \App\Service\UGentCalendar
+     */
     private $UGentCalendar;
     
+    /**
+     * Create a new command instance.
+     *
+     * @param \App\Service\UGentCalendar $UGentCalendar
+     */
     public function __construct(UGentCalendar $UGentCalendar)
     {
+        parent::__construct();
+        
         $this->UGentCalendar = $UGentCalendar;
     }
     
-    public function index()
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
     {
         $calendar = new Calendar('UGent');
         
@@ -35,9 +58,9 @@ class ICalController extends Controller {
                 $this->addEventToCalendar($calendar, $event);
             });
         
-        return response($calendar->render())
-            ->header('Content-Type', 'text/calendar; charset=utf-8')
-            ->header('Content-Disposition', 'attachment; filename="cal.ics"');
+        File::put(public_path('cal.ics'), $calendar->render());
+        
+        $this->info('Successfully fetched');
     }
     
     private function addEventToCalendar(Calendar $calendar, $event)
