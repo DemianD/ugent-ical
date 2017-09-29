@@ -56,9 +56,9 @@ class UGentCalendar {
     {
         return collect($events->activiteiten)
             ->map(function ($event) {
+                $event->beginuur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->beginuur);
+                $event->einduur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->einduur);
                 $event->datum = Carbon::createFromFormat('Y-m-d', $event->datum);
-                $event->beginuur = Carbon::createFromFormat('H:i:s.000', $event->beginuur);
-                $event->einduur = Carbon::createFromFormat('H:i:s.000', $event->einduur);
                 
                 $groups = data_get($event, 'groep');
                 
