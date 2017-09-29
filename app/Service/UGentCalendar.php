@@ -88,10 +88,10 @@ class UGentCalendar {
                 $event->beginuur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->beginuur);
                 $event->einduur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->einduur);
                 $event->datum = Carbon::createFromFormat('Y-m-d', $event->datum);
-                
+    
                 $groups = data_get($event, 'groep');
                 
-                if ($groups !== null)
+                if (!is_null($groups))
                 {
                     $event->groep = $this->parseGroups($groups);
                 }
@@ -122,6 +122,9 @@ class UGentCalendar {
                 return $groups;
             })
             ->flatten()
+            ->map(function($group) {
+                return intval($group);
+            })
             ->all();
     }
 }

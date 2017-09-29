@@ -28,6 +28,9 @@ class ICalController extends Controller {
         $calendar = new Calendar('UGent');
         
         $this->UGentCalendar->getEventsForAcademicYear(2017)
+            ->filter(function ($event) {
+                return !data_get($event, 'groep') || in_array(config('custom.ugent.group'), $event->groep);
+            })
             ->each(function ($event) use ($calendar) {
                 $this->addEventToCalendar($calendar, $event);
             });
