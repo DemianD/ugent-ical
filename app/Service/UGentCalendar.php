@@ -3,6 +3,8 @@
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Promise\Promise;
+use function GuzzleHttp\Promise\settle;
 use Illuminate\Support\Facades\Cache;
 
 class UGentCalendar {
@@ -19,20 +21,48 @@ class UGentCalendar {
         $this->UGentCas = $UGentCas;
     }
     
-    public function getEvents($year, $month)
+    public function getEventsForAcademicYear($year)
+    {
+        $this->provideToken();
+        $nextYear = $year + 1;
+        
+        $promises = [
+            $this->fetchEvents($year, 9),
+            $this->fetchEvents($year, 10),
+            $this->fetchEvents($year, 11),
+            $this->fetchEvents($year, 12),
+            $this->fetchEvents($nextYear, 1),
+            $this->fetchEvents($nextYear, 2),
+            $this->fetchEvents($nextYear, 3),
+            $this->fetchEvents($nextYear, 4),
+            $this->fetchEvents($nextYear, 5),
+            $this->fetchEvents($nextYear, 6),
+            $this->fetchEvents($nextYear, 7),
+            $this->fetchEvents($nextYear, 8),
+            $this->fetchEvents($nextYear, 9),
+        ];
+        
+        $results = settle($promises)->wait();
+        
+        return collect($results)
+            ->map(function ($response) {
+                return json_decode($response['value']->getBody());
+            })
+            ->flatMap(function ($events) {
+                return $this->mapEvents($events);
+            });
+    }
+    
+    private function provideToken()
     {
         $this->loginToken = Cache::remember('ugent_cas_token', 60, function () {
             return $this->UGentCas->getLoginToken();
         });
-        
-        $events = $this->fetchEvents($year, $month);
-        
-        return $this->mapEvents($events);
     }
     
     private function fetchEvents($year, $month)
     {
-        $response = $this->client->request('GET', $this->calendarUrl, [
+        return $this->client->requestAsync('GET', $this->calendarUrl, [
                 'cookies' => $this->getCookieJar(),
                 'query'   => [
                     'year'  => $year,
@@ -40,13 +70,12 @@ class UGentCalendar {
                 ]
             ]
         );
-        
-        return json_decode($response->getBody());
     }
     
     private function getCookieJar()
     {
         $jar = new CookieJar(true);
+        
         $jar->setCookie($this->UGentCas->getLoginCookie($this->loginToken));
         
         return $jar;

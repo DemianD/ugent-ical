@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "96d4d57ef472b29ead7853b633ce88f7",
+    "content-hash": "c60efd43f7a74023898cd2bba1612e15",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",

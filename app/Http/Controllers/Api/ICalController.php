@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Service\UGentCalendar;
 use App\Service\UGentCas;
 use Carbon\Carbon;
+use Eluceo\iCal\Component\Calendar;
+use Eluceo\iCal\Component\Event;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
@@ -23,8 +25,27 @@ class ICalController extends Controller {
     
     public function index()
     {
-        $events = $this->UGentCalendar->getEvents('2017', '9');
+        $calendar = new Calendar('UGent');
         
-        return $events;
+        $this->UGentCalendar->getEventsForAcademicYear(2017)
+            ->each(function ($event) use ($calendar) {
+                $this->addEventToCalendar($calendar, $event);
+            });
+        
+        return response($calendar->render())
+            ->header('Content-Type', 'text/calendar; charset=utf-8')
+            ->header('Content-Disposition', 'attachment; filename="cal.ics"');
+    }
+    
+    private function addEventToCalendar(Calendar $calendar, $event)
+    {
+        $vEvent = (new Event())
+            ->setDtStart($event->beginuur)
+            ->setDtEnd($event->einduur)
+            ->setLocation(data_get($event, 'locatie.lokaal'))
+            ->setSummary($event->naam)
+            ->setUseTimezone(true);
+        
+        $calendar->addComponent($vEvent);
     }
 }
