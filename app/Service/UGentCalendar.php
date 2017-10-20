@@ -11,7 +11,7 @@ class UGentCalendar {
     
     private $UGentCas;
     
-    private $calendarUrl = 'http://minerva.ugent.be///main/curriculum/centauro_user.php';
+    private $calendarUrl = 'http://minerva.ugent.be/main/curriculum/centauro_user.php';
     
     private $loginToken;
     
@@ -24,29 +24,26 @@ class UGentCalendar {
     public function getEventsForAcademicYear($year)
     {
         $this->provideToken();
-        $nextYear = $year + 1;
         
         $promises = [
-            $this->fetchEvents($year, 9),
-            $this->fetchEvents($year, 10),
-            $this->fetchEvents($year, 11),
-            $this->fetchEvents($year, 12),
-            $this->fetchEvents($nextYear, 1),
-            $this->fetchEvents($nextYear, 2),
-            $this->fetchEvents($nextYear, 3),
-            $this->fetchEvents($nextYear, 4),
-            $this->fetchEvents($nextYear, 5),
-            $this->fetchEvents($nextYear, 6),
-            $this->fetchEvents($nextYear, 7),
-            $this->fetchEvents($nextYear, 8),
-            $this->fetchEvents($nextYear, 9),
+            $this->fetchEvents()
         ];
         
         $results = settle($promises)->wait();
-        
+
         return collect($results)
             ->map(function ($response) {
-                return json_decode($response['value']->getBody());
+                $value = $response['value']->getBody()->getContents();
+             
+                $fixed = str_replace('{"resulttype":"success","activiteiten":', '', $value);
+                $fixed = str_replace('[]}', '', $fixed);
+                $fixed = str_replace(']}[', ',', $fixed);
+                $fixed = rtrim($fixed, '}');
+                
+                return json_decode($fixed);
+            })
+            ->reject(function ($events) {
+                return is_null($events);
             })
             ->flatMap(function ($events) {
                 return $this->mapEvents($events);
@@ -60,14 +57,10 @@ class UGentCalendar {
         });
     }
     
-    private function fetchEvents($year, $month)
+    private function fetchEvents()
     {
         return $this->client->requestAsync('GET', $this->calendarUrl, [
                 'cookies' => $this->getCookieJar(),
-                'query'   => [
-                    'year'  => $year,
-                    'month' => $month,
-                ]
             ]
         );
     }
@@ -83,7 +76,7 @@ class UGentCalendar {
     
     private function mapEvents($events)
     {
-        return collect($events->activiteiten)
+        return collect($events)
             // Edge case ...
             ->filter(function($event) {
                 return $event !== "";
