@@ -52,7 +52,7 @@ class UGentCalendar {
                 $fixed = rtrim($fixed, '}');
             
                 $perSuccessType = explode('[XXX]', $fixed);
-                $last = end($fixed);
+                $last = end($perSuccessType);
 
                 $fixed = rtrim($last, '}');
 
