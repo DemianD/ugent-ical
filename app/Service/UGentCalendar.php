@@ -27,19 +27,7 @@ class UGentCalendar {
         $nextYear = $year + 1;        
         
         $promises = [
-            $this->fetchEvents($year, 9),
-            $this->fetchEvents($year, 10),
-            $this->fetchEvents($year, 11),
             $this->fetchEvents($year, 12),
-            $this->fetchEvents($nextYear, 1),
-            $this->fetchEvents($nextYear, 2),
-            $this->fetchEvents($nextYear, 3),
-            $this->fetchEvents($nextYear, 4),
-            $this->fetchEvents($nextYear, 5),
-            $this->fetchEvents($nextYear, 6),
-            $this->fetchEvents($nextYear, 7),
-            $this->fetchEvents($nextYear, 8),
-            $this->fetchEvents($nextYear, 9),
         ];
         
         $results = settle($promises)->wait();
