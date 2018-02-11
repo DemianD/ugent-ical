@@ -99,7 +99,7 @@ class UGentCalendar {
         return collect($events)
             // Edge case ...
             ->filter(function($event) {
-                return $event !== "";
+                return isset($event) && $event !== "" && property_exists($event, 'naam');
             })
             ->map(function ($event) {
                 $event->beginuur = Carbon::createFromFormat('Y-m-d H:i:s.000', $event->datum . ' ' . $event->beginuur);
