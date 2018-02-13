@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Service\UGentCalendar;
 use Eluceo\iCal\Component\Calendar;
+use Eluceo\iCal\Component\Alarm;
 use Eluceo\iCal\Component\Event;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -48,7 +49,9 @@ class FetchUGentCalendar extends Command {
      */
     public function handle()
     {
-        $calendar = new Calendar('UGent');
+        $calendar = (new Calendar('UGent'))
+            ->setCalendarScale(Calendar::CALSCALE_GREGORIAN)
+            ->setMethod(Calendar::METHOD_PUBLISH);
         
         $this->UGentCalendar->getEventsForAcademicYear(2017)
             ->filter(function ($event) {
@@ -65,13 +68,19 @@ class FetchUGentCalendar extends Command {
     
     private function addEventToCalendar(Calendar $calendar, $event)
     {
+        $vAlarm = (new Alarm())
+            ->setAction(Alarm::ACTION_DISPLAY)
+            ->setDescription('Herinnering')
+            ->setTrigger('-PT5M');
+
         $vEvent = (new Event())
             ->setDtStart($event->beginuur)
             ->setDtEnd($event->einduur)
             ->setLocation(data_get($event, 'locatie.lokaal'))
             ->setSummary($event->naam)
             ->setUseTimezone(true);
-        
+
+        $vEvent->addComponent($vAlarm);
         $calendar->addComponent($vEvent);
     }
 }
