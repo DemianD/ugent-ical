@@ -71,7 +71,7 @@ class FetchUGentCalendar extends Command {
         $vAlarm = (new Alarm())
             ->setAction(Alarm::ACTION_DISPLAY)
             ->setDescription('Herinnering')
-            ->setTrigger('-PT5M');
+            ->setTrigger('-PT15M');
 
         $vEvent = (new Event())
             ->setDtStart($event->beginuur)
