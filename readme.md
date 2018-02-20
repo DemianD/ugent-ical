@@ -2,7 +2,7 @@
 
 This project offers a personal iCal file for your personal Minerva account.
 
-- 5 minutes before a lesson you'll receive an alarm.
+- 15 minutes before a lesson you'll receive an alarm.
 - The iCal file synces every hour with Minerva.
 - You can specify your class group, so you don't see other classes.
 
