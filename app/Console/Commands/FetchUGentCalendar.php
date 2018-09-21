@@ -61,7 +61,7 @@ class FetchUGentCalendar extends Command {
                 $this->addEventToCalendar($calendar, $event);
             });
         
-        File::put(public_path('cal.ics'), $calendar->render());
+        File::put(storage_path('calendar/cal.ics'), $calendar->render());
         
         $this->info('Successfully fetched');
     }
