@@ -53,10 +53,10 @@ class FetchUGentCalendar extends Command {
             ->setCalendarScale(Calendar::CALSCALE_GREGORIAN)
             ->setMethod(Calendar::METHOD_PUBLISH);
         
-        $this->UGentCalendar->getEventsForAcademicYear(2017)
-            ->filter(function ($event) {
-                return !data_get($event, 'groep') || in_array(config('custom.ugent.group'), $event->groep);
-            })
+        $this->UGentCalendar->getEventsForAcademicYear(2018)
+            // ->filter(function ($event) {
+            //     return !data_get($event, 'groep') || in_array(config('custom.ugent.group'), $event->groep);
+            // })
             ->each(function ($event) use ($calendar) {
                 $this->addEventToCalendar($calendar, $event);
             });
