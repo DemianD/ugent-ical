@@ -10,6 +10,10 @@ return [
     'ugent' => [
         'group' => env('CUSTOM_UGENT_GROUP'),
     ],
-    
+
+    'authentication' => [
+        'enabled' => env('CUSTOM_AUTH_ENABLED', false),
+        'password' => env('CUSTOM_AUTH_PASSWORD'),
+    ]
     
 ];

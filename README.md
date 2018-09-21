@@ -7,7 +7,6 @@ This project offers a personal iCal file for your personal Minerva account.
 - You can specify your class group, so you don't see other classes.
 
 ## Example
-If you're following the Bridging Programme Master of Science in Industrial Engineering: informatics, and you're in group 39 you can subscribe to following iCal link: [https://ugent-ical.dem.be/cal.ics](https://ugent-ical.dem.be/cal.ics)
 
 ### Before (iCal from Minerva)
 ![Before](./.example/before.png)
