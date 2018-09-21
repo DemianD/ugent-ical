@@ -95,11 +95,17 @@ class FetchUGentCalendar extends Command
             ->setDescription('Herinnering')
             ->setTrigger('-PT15M');
 
+        $groups = data_get($event, 'groep');
+
+        $groupsFormatted = is_null($groups)
+            ? ''
+            : '(' .  implode(', ', $groups) . ')';
+
         $vEvent = (new Event())
             ->setDtStart($event->beginuur)
             ->setDtEnd($event->einduur)
             ->setLocation(data_get($event, 'locatie.lokaal'))
-            ->setSummary($event->naam)
+            ->setSummary($event->naam . '  ' . $groupsFormatted)
             ->setUseTimezone(true);
 
         $vEvent->addComponent($vAlarm);
