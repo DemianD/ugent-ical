@@ -3,8 +3,8 @@
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\SetCookie;
 
-class UGentCas {
-    
+class UGentCas
+{
     private $client;
     
     private $loginUrl = 'https://login.ugent.be/login?service=https://minerva.ugent.be/plugin/cas/logincas.php';

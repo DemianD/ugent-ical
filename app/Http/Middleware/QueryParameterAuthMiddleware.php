@@ -16,13 +16,13 @@ class QueryParameterAuthMiddleware
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if(!config('custom.authentication.enabled')) {
+        if (!config('custom.authentication.enabled')) {
             return $next($request);
         }
 
-        if(request('key') === config('custom.authentication.password')) {
+        if (request('key') === config('custom.authentication.password')) {
             return $next($request);
-        }   
+        }
 
         return response()->json(['error' => 'Unauthenticated.'], 401);
     }

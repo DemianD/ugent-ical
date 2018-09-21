@@ -7,8 +7,8 @@ use GuzzleHttp\Promise\Promise;
 use function GuzzleHttp\Promise\settle;
 use Illuminate\Support\Facades\Cache;
 
-class UGentCalendar {
-    
+class UGentCalendar
+{
     private $UGentCas;
     
     private $calendarUrl = 'http://minerva.ugent.be/main/curriculum/centauro_user.php';
@@ -24,7 +24,7 @@ class UGentCalendar {
     public function getEventsForAcademicYear($year)
     {
         $this->provideToken();
-        $nextYear = $year + 1;        
+        $nextYear = $year + 1;
         
         $promises = [
             $this->fetchEvents($year, 9),
@@ -73,9 +73,12 @@ class UGentCalendar {
         });
     }
     
-    private function fetchEvents($year, $month)    
+    private function fetchEvents($year, $month)
     {
-        return $this->client->requestAsync('GET', $this->calendarUrl, [
+        return $this->client->requestAsync(
+            'GET',
+            $this->calendarUrl,
+            [
                 'cookies' => $this->getCookieJar(),
                 'query'   => [
                     'year'  => $year,
@@ -98,7 +101,7 @@ class UGentCalendar {
     {
         return collect($events)
             // Edge case ...
-            ->filter(function($event) {
+            ->filter(function ($event) {
                 return isset($event) && $event !== "" && property_exists($event, 'naam');
             })
             ->map(function ($event) {
@@ -108,8 +111,7 @@ class UGentCalendar {
                 
                 $groups = data_get($event, 'groep');
                 
-                if (!is_null($groups))
-                {
+                if (!is_null($groups)) {
                     $event->groep = $this->parseGroups($groups);
                 }
                 
@@ -124,15 +126,13 @@ class UGentCalendar {
                 return trim($group);
             })
             ->map(function ($group) {
-                if (!str_contains($group, '-'))
-                {
+                if (!str_contains($group, '-')) {
                     return $group;
                 }
                 
                 $groups = explode('-', $group);
                 
-                for ($i = $groups[0] + 1; $i < $groups[1]; $i++)
-                {
+                for ($i = $groups[0] + 1; $i < $groups[1]; $i++) {
                     array_push($groups, $i);
                 }
                 
