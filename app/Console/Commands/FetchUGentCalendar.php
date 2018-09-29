@@ -60,15 +60,7 @@ class FetchUGentCalendar extends Command
                     return false;
                 }
 
-                if ($event->naam === 'Wiskunde A' && $event->datum->dayOfWeek === 2) {
-                    return false;
-                }
-
                 if ($event->naam === 'Fysica: mechanica, optica en moderne fysica' && $event->datum->dayOfWeek === 3 && $event->beginuur->hour === 13) {
-                    return false;
-                }
-
-                if ($event->naam === 'Gevorderde algoritmen' && $event->datum->dayOfWeek === 4 && $event->beginuur->hour === 8) {
                     return false;
                 }
 
