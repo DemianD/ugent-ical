@@ -64,14 +64,14 @@ class FetchUGentCalendar extends Command
                     return false;
                 }
 
-                if ($event->naam === 'Wiskunde A' && $event->datum->dayOfWeek === 4) {
-                    return false;
-                }
-
                 if ($event->naam === 'Fysica: mechanica, optica en moderne fysica' && $event->datum->dayOfWeek === 5) {
                     return false;
                 }
 
+                if ($event->naam === 'Gevorderde algoritmen') {
+                    return false;
+                }
+                
                 return true;
                 // return !data_get($event, 'groep') || in_array(config('custom.ugent.group'), $event->groep);
             })
