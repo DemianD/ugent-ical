@@ -105,7 +105,8 @@ class FetchUGentCalendar extends Command
             ->setDtStart($event->beginuur)
             ->setDtEnd($event->einduur)
             ->setLocation(data_get($event, 'locatie.lokaal'))
-            ->setSummary($event->naam . '  ' . $groupsFormatted)
+            ->setSummary($event->naam)
+            ->setDescription($groupsFormatted)
             ->setUseTimezone(true);
 
         $vEvent->addComponent($vAlarm);
