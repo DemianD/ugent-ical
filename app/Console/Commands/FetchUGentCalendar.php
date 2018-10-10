@@ -72,6 +72,10 @@ class FetchUGentCalendar extends Command
                     return false;
                 }
 
+                if ($event->naam === 'Wiskunde A' && $event->datum->dayOfWeek === 2) {
+                    return false;
+                }
+
                 if ($event->naam === 'Gevorderde algoritmen') {
                     return false;
                 }
