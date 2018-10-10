@@ -63,6 +63,11 @@ class UGentCalendar
             })
             ->flatMap(function ($events) {
                 return $this->mapEvents($events);
+            })
+            ->unique(function ($event) {
+                return $event->naam
+                    . $event->beginuur->toDateTimeString()
+                    . $event->einduur->toDateTimeString();
             });
     }
     
