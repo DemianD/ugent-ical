@@ -79,9 +79,11 @@ class FetchUGentCalendar extends Command
                 if ($event->naam === 'Gevorderde algoritmen') {
                     return false;
                 }
-                
+
+                if ($event->naam === 'Gegevensstructuren en algoritmen') {
+                    return data_get($event, 'groep') && in_array(config('custom.ugent.group'), $event->groep);
+                }
                 return true;
-                // return !data_get($event, 'groep') || in_array(config('custom.ugent.group'), $event->groep);
             })
             ->each(function ($event) use ($calendar) {
                 $this->addEventToCalendar($calendar, $event);
